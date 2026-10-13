@@ -16,12 +16,6 @@ jobs:
         with:
           ruby-version: '3.1'
           bundler-cache: true
-      - name: Check Pages site
-        run: |
-          curl -s -w '\nHTTP_STATUS:%{http_code}\n' \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages
       - name: Build with Jekyll
         run: bundle exec jekyll build
         env:
@@ -34,5 +28,13 @@ jobs:
           grep -o 'Academic Background\|Research Experience\|Skills and Research Interests\|Publications\|Contact\|jliugi@connect.ust.hk' _site/index.html
           echo '--- Publication entries ---'
           grep -o 'Published in <i>[^<]*</i>, [0-9]*' _site/publications/index.html
+          echo '--- Sidebar links ---'
+          grep -o 'https://github.com/Vicent0205\|mailto:jliugi@connect.ust.hk\|https://twitter.com/junteng88716710' _site/index.html
           echo '--- Stylesheet path ---'
           grep -o 'href="[^"]*assets/css/main.css"' _site/index.html
+      - name: Check Pages site
+        run: |
+          curl -s -w '\nHTTP_STATUS:%{http_code}\n' \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/pages
